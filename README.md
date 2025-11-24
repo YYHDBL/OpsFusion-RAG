@@ -1,5 +1,5 @@
 # OpsFusion-RAG (LangChain + DeepSeek + Qdrant)
-
+![alt text](rag流程图.png)
 ## 快速开始
 ```bash
 # 1) 激活已有 rag 虚拟环境（已安装 FlagEmbedding/torch）
