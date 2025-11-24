@@ -1,0 +1,61 @@
+env:
+  deepseek_api_key_env: DEEPSEEK_API_KEY
+  deepseek_base_url: https://api.deepseek.com
+  silicon_api_key_env: SILICON_API_KEY
+  dashscope_api_key_env: DASHSCOPE_API_KEY
+
+paths:
+  data_root: src/data/format_data_with_img
+  pathmap: src/data/format_data_with_img/pathmap.json
+  imgmap: src/data/format_data_with_img/imgmap_filtered.json
+  collection: easyrag_hybrid
+
+embedding:
+  model_name: BAAI/bge-m3
+  device: auto  # auto->mps if available else cpu
+  batch_size: 8
+  normalize: true
+
+retrieval:
+  chunk_size: 1024
+  chunk_overlap: 200
+  topk_dense: 50
+  topk_sparse: 50
+  topk_final: 6
+  use_query_rewrite: true
+  query_rewrite_model: deepseek-chat
+  images:
+    enable_on_demand: true
+    max_per_chunk: 2
+    trigger_regex: "(如图|见下图|参见图|图\\s*\\d+|图表\\s*\\d+|figure\\s*\\d+|fig\\.)"
+
+qdrant:
+  host: localhost
+  port: 6333
+  https: false
+  api_key: null
+  collection: easyrag_hybrid
+  vector_size: 1024
+  distance: Cosine
+  sparse_name: text-sparse
+  timeout: 60  # seconds
+
+reranker:
+  endpoint: https://api.siliconflow.cn/v1/rerank
+  model: BAAI/bge-reranker-v2-m3
+
+vlm:
+  enabled: false
+  endpoint: https://dashscope.aliyuncs.com/compatible-mode/v1
+  model: qwen3-vl-flash
+
+generation:
+  model: deepseek-chat
+  temperature: 0.3
+  system_prompt: |
+    你是一名可靠的运维知识库助手。严格依据“上下文信息”作答，禁止编造或添加额外背景。
+    参考回答格式：
+    1) 如有步骤/参数，用分点简明列出；避免长段落复述。
+    2) 若上下文无答案，直接回答“不确定”。
+    3) 若多条证据冲突，优先使用Top-1证据并说明纠正。
+    4) 不要重复粘贴上下文原文，提炼关键信息即可。
