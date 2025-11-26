@@ -53,3 +53,14 @@ uvicorn opsfusion_rag.server.main:app --host 0.0.0.0 --port 8000
   print(desc)
   ```
 - 当前索引流程默认使用预生成的 `imgmap_filtered.json` 描述；如需替换，可调用上方脚本生成后写回 imgmap 再建索引。
+
+## 评测（RAGAS）
+- Ground Truth：`src/data/val.json`
+- 运行：
+  ```bash
+  python -m opsfusion_rag.eval.ragas_eval \
+    --config opsfusion_rag/configs/config.yaml \
+    --val src/data/val.json \
+    --limit 20  # 可选，仅评估前 N 条
+  ```
+- 指标：Faithfulness / Answer Relevance / Context Relevance，评测 LLM 使用 DeepSeek（从环境变量读取）。
